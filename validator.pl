@@ -22,7 +22,7 @@ tokenize("parent(john,mary).", [identifier, open_paren, identifier, comma, ident
 % Validation predicate
 validate(Tokens) :-
     initial_state(Start),
-    validate_helper(Start, Tokens, end).
+    validate_helper(Start, Tokens, end) -> true ; fail.
 
 % Helper predicate with improved error handling
 validate_helper(CurrentState, [], FinalState) :-
