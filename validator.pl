@@ -20,7 +20,8 @@ validate(Tokens) :-
     validate_helper(Start, Tokens, end).
 
 validate_helper(CurrentState, [], FinalState) :-
-    (final_state(FinalState) -> true ; format('Invalid Prolog syntax: Unexpected end of input at state ~w', [CurrentState]), nl, fail).
+    final_state(CurrentState) -> (final_state(FinalState) -> true ; fail);
+     format('Invalid Prolog syntax: Unexpected end of input at state ~w', [CurrentState]), nl, fail.
 
 validate_helper(CurrentState, [Token|Rest], FinalState) :-
     transition(CurrentState, Token, NextState),
