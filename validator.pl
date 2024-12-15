@@ -14,3 +14,14 @@ transition(error, _, error).
 % Initial and final states
 initial_state(start).
 final_state(end).
+
+validate(Tokens) :-
+    initial_state(Start),
+    validate_helper(Start, Tokens, end).
+
+validate_helper(CurrentState, [], FinalState) :-
+    (final_state(FinalState) -> true ; format('Invalid Prolog syntax: Unexpected end of input at state ~w', [CurrentState]), nl, fail).
+
+validate_helper(CurrentState, [Token|Rest], FinalState) :-
+    transition(CurrentState, Token, NextState),
+    validate_helper(NextState, Rest, FinalState).
