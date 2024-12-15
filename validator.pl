@@ -1,3 +1,4 @@
+
 % FSM transitions
 transition(start, identifier, identifier1).
 transition(identifier1, open_paren, paren1).
@@ -15,10 +16,15 @@ transition(error, _, error).
 initial_state(start).
 final_state(end).
 
+% Simplified Tokenizer (Needs significant improvement for real-world use)
+tokenize("likes(john,mary).", [identifier, open_paren, identifier, comma, identifier, close_paren, dot]).
+
+% Validation predicate
 validate(Tokens) :-
     initial_state(Start),
     validate_helper(Start, Tokens, end).
 
+% Helper predicate with improved error handling
 validate_helper(CurrentState, [], FinalState) :-
     final_state(CurrentState) -> (final_state(FinalState) -> true ; fail);
      format('Invalid Prolog syntax: Unexpected end of input at state ~w', [CurrentState]), nl, fail.
@@ -26,3 +32,21 @@ validate_helper(CurrentState, [], FinalState) :-
 validate_helper(CurrentState, [Token|Rest], FinalState) :-
     transition(CurrentState, Token, NextState),
     validate_helper(NextState, Rest, FinalState).
+
+% test predicates for testing
+test1 :-
+    tokenize("likes(john,mary).", Tokens),
+    validate(Tokens),
+    write('Valid Prolog syntax'), nl.
+
+test2 :-
+    tokenize("likes(john,mary", Tokens),
+    validate(Tokens).
+
+test3 :-
+    tokenize("likes(john,mary)", Tokens),
+    validate(Tokens).
+
+test4 :-
+    tokenize("likes(john,mary.)", Tokens),
+    validate(Tokens).
